@@ -112,13 +112,18 @@ SettingsStack.navigationOptions = {
 
 SettingsStack.path = "";
 
-const tabNavigator = createBottomTabNavigator({
-  ChatsStack,
-  SearchStack,
-  HomeStack,
-  FitnessStack,
-  SettingsStack
-});
+const tabNavigator = createBottomTabNavigator(
+  {
+    ChatsStack,
+    SearchStack,
+    HomeStack,
+    FitnessStack,
+    SettingsStack
+  },
+  {
+    initialRouteName: "HomeStack"
+  }
+);
 
 tabNavigator.path = "";
 
