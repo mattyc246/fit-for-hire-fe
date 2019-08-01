@@ -9,6 +9,7 @@ class SignUpScreen extends React.Component {
     this.state = {
       fullName: "",
       username: "",
+      email: "",
       password: "",
       confirmPw: "",
       phoneNumber: "",
@@ -21,6 +22,10 @@ class SignUpScreen extends React.Component {
     this.setState({
       modalVisible: value
     });
+  };
+
+  handleSubmit = () => {
+    alert("working");
   };
 
   handleInput = (key, value) => {
@@ -63,6 +68,13 @@ class SignUpScreen extends React.Component {
           placeholder={"Choose a Username"}
         />
         <TextInput
+          name="email"
+          onChangeText={email => this.handleInput("email", email)}
+          style={styles.inputField}
+          value={this.state.email}
+          placeholder={"Enter Email"}
+        />
+        <TextInput
           name="phoneNumber"
           onChangeText={phoneNumber =>
             this.handleInput("phoneNumber", phoneNumber)
@@ -97,7 +109,10 @@ class SignUpScreen extends React.Component {
           By clicking agree you agree to all terms and conditions of registering
           with Fit 4 Hire.
         </Text>
-        <TouchableOpacity style={styles.buttonSignUp}>
+        <TouchableOpacity
+          style={styles.buttonSignUp}
+          onPress={this.handleSubmit}
+        >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
       </ScrollView>
