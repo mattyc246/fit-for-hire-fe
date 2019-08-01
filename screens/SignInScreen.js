@@ -5,8 +5,12 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
+  AsyncStorage
 } from "react-native";
+
+import axios from "axios";
 
 class SignInScreen extends React.Component {
   constructor(props) {
@@ -16,6 +20,41 @@ class SignInScreen extends React.Component {
       password: ""
     };
   }
+
+  handleSubmit = () => {
+    const { username, password } = this.state;
+
+    if (username && password) {
+      let formData = new FormData();
+
+      formData.append("username", username);
+      formData.append("password", password);
+
+      axios
+        .post("http://192.168.1.71:5000/api/v1/sessions/", formData, {
+          headers: { "content-type": "multipart/form-data" }
+        })
+        .then(response => {
+          if (response.data.valid) {
+            AsyncStorage.setItem("userTokenF4H", response.data.auth_token);
+            Alert.alert("Logged In", "Welcome back!", [
+              {
+                text: "Continue",
+                onPress: () => this.props.navigation.navigate("AuthLoading")
+              }
+            ]);
+          } else {
+            Alert.alert("Error", response.data.message);
+          }
+        })
+        .catch(error => {
+          console.log(error.response.data);
+          Alert.alert("Error", error.response.data.message);
+        });
+    } else {
+      Alert.alert("Error", "Please provide a username and password");
+    }
+  };
 
   handleInput = (key, value) => {
     this.setState({
@@ -52,7 +91,7 @@ class SignInScreen extends React.Component {
         />
         <TouchableOpacity
           style={styles.buttonSignIn}
-          onPress={() => alert("Hi")}
+          onPress={this.handleSubmit}
         >
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
