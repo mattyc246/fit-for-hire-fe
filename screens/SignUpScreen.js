@@ -1,7 +1,15 @@
 import React from "react";
-import { ScrollView, StyleSheet, Image, Text, TextInput } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert
+} from "react-native";
 import DateModal from "../components/DateModal";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import axios from "axios";
 
 class SignUpScreen extends React.Component {
   constructor(props) {
@@ -18,14 +26,73 @@ class SignUpScreen extends React.Component {
     };
   }
 
+  handleSubmit = () => {
+    const {
+      fullName,
+      username,
+      email,
+      password,
+      confirmPw,
+      phoneNumber,
+      dateOfBirth
+    } = this.state;
+
+    if (
+      fullName &&
+      username &&
+      email &&
+      password &&
+      confirmPw &&
+      phoneNumber &&
+      dateOfBirth
+    ) {
+      if (password === confirmPw) {
+        let formData = new FormData();
+        formData.append("full_name", fullName);
+        formData.append("username", username);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("phone_number", phoneNumber);
+        formData.append("date_of_birth", dateOfBirth.toUTCString());
+
+        axios
+          .post("http://192.168.1.71:5000/api/v1/users/", formData, {
+            headers: { "content-type": "multipart/form-data" }
+          })
+          .then(response => {
+            if (response.data.created) {
+              Alert.alert("Success", response.data.message, [
+                {
+                  text: "Sign In Now",
+                  onPress: () => this.props.navigation.navigate("AuthLoading")
+                }
+              ]);
+            } else {
+              Alert.alert("Error", response.data.message);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            Alert.alert(
+              "Error",
+              "Something went wrong, we are trying to fix it as we speak"
+            );
+          });
+      } else {
+        Alert.alert(
+          "Password Error",
+          "The passwords you have entered do not match"
+        );
+      }
+    } else {
+      Alert.alert("Error!", "Please fill out all details before submitting!");
+    }
+  };
+
   setModalVisible = value => {
     this.setState({
       modalVisible: value
     });
-  };
-
-  handleSubmit = () => {
-    alert("working");
   };
 
   handleInput = (key, value) => {
