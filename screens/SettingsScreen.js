@@ -1,5 +1,11 @@
 import React from "react";
-import { AsyncStorage, TouchableOpacity, Text } from "react-native";
+import {
+  AsyncStorage,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ScrollView
+} from "react-native";
 
 class SettingsScreen extends React.Component {
   constructor(props) {
@@ -13,15 +19,40 @@ class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <TouchableOpacity onPress={this.handleLogout}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
+      <ScrollView style={styles.container}>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={this.handleLogout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
+      </ScrollView>
     );
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#cbe5f8",
+    padding: 15
+  },
+  logoutButton: {
+    width: "70%",
+    height: 40,
+    alignSelf: "center",
+    backgroundColor: "#cc3b56",
+    borderRadius: 10,
+    justifyContent: "center"
+  },
+  buttonText: {
+    alignSelf: "center",
+    color: "#ffffff"
+  }
+});
+
 SettingsScreen.navigationOptions = {
-  title: "app.json"
+  title: "Settings"
 };
 
 export default SettingsScreen;
