@@ -73,10 +73,7 @@ class SignUpScreen extends React.Component {
           })
           .catch(error => {
             console.log(error);
-            Alert.alert(
-              "Error",
-              "Something went wrong, we are trying to fix it as we speak"
-            );
+            Alert.alert("Error", error.response.data.message);
           });
       } else {
         Alert.alert(
