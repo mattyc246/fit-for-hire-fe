@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import Loader from "../components/Loader";
+import Home from "../components/Home";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class HomeScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        {this.state.isLoading ? <Loader /> : null}
+        {this.state.isLoading ? <Loader /> : <Home />}
       </SafeAreaView>
     );
   }

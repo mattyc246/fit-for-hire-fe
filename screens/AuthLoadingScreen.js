@@ -26,7 +26,7 @@ class AuthLoadingScreen extends React.Component {
       });
 
       this.props.navigation.navigate(userLoggedIn ? "Main" : "Auth");
-    }, 5000);
+    }, 3000);
   };
 
   render() {
