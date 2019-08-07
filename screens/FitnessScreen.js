@@ -1,18 +1,35 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { ExpoLinksView } from "@expo/samples";
+import Loader from "../components/Loader";
+import Fitness from "../components/Fitness";
+import { SafeAreaView } from "react-navigation";
 
-export default function FitnessScreen() {
-  return (
-    <ScrollView style={styles.container}>
-      {/**
-       * Go ahead and delete ExpoLinksView and replace it with your content;
-       * we just wanted to provide you with some helpful links.
-       */}
-      <ExpoLinksView />
-    </ScrollView>
-  );
+class FitnessScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true
+    };
+  }
+
+  componentDidMount = () => {
+    setTimeout(() => {
+      this.setState({ isLoading: false });
+    }, 2500);
+  };
+
+  render() {
+    const { isLoading } = this.state;
+    return (
+      <SafeAreaView style={styles.container}>
+        {isLoading ? <Loader /> : <Fitness />}
+      </SafeAreaView>
+    );
+  }
 }
+
+export default FitnessScreen;
 
 FitnessScreen.navigationOptions = {
   title: "Fitness"
@@ -21,7 +38,6 @@ FitnessScreen.navigationOptions = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
-    backgroundColor: "#fff"
+    backgroundColor: "#cbe5f8"
   }
 });

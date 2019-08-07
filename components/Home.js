@@ -126,7 +126,8 @@ class Home extends React.Component {
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Calories</Text>
             <Text style={styles.textToday}>Today</Text>
-            <Text style={styles.textSteps}>{caloriesToday} cals</Text>
+            <Text style={styles.textSteps}>{caloriesToday}</Text>
+            <Text style={styles.textSteps}>calories</Text>
           </View>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Steps</Text>
@@ -134,6 +135,7 @@ class Home extends React.Component {
               <>
                 <Text style={styles.textToday}>Today</Text>
                 <Text style={styles.textSteps}>{todayStepCount}</Text>
+                <Text style={styles.textSteps}>steps</Text>
               </>
             ) : (
               <Text>Error! Unavailable</Text>
