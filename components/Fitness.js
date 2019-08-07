@@ -1,23 +1,28 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { LineChart } from "react-native-chart-kit";
-import SevenDayChart from "../components/SevenDayChart";
+import SevenDayStepChart from "../components/SevenDayStepChart";
+import SevenDayCalorieChart from "../components/SevenDayCalorieChart";
+import HourlyStepChart from "../components/HourlyStepChart";
 import { Pedometer } from "expo-sensors";
 
 class Fitness extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sevenDayHistory: []
+      sevenDayStepHistory: [],
+      sevenDayCalorieHistory: [],
+      hourlyStepHistory: []
     };
   }
 
   componentDidMount = () => {
     this.getSevenDayResults();
+    this.getHourlyStepCount();
   };
 
   getSevenDayResults = async () => {
     let dayData = [];
+    let calorieData = [];
     for (let i = 6; i >= 0; i--) {
       const end = new Date();
       const start = new Date();
@@ -28,13 +33,39 @@ class Fitness extends React.Component {
       end.setHours(23, 59, 59, 59);
 
       await Pedometer.getStepCountAsync(start, end).then(result => {
-        console.log(result);
         dayData.push(result.steps);
+        calorieData.push(result.steps / 20);
       });
     }
-    console.log(dayData);
     this.setState({
-      sevenDayHistory: dayData
+      sevenDayStepHistory: dayData,
+      sevenDayCalorieHistory: calorieData
+    });
+  };
+
+  getHourlyStepCount = async () => {
+    let hours = [0, 3, 6, 9, 12, 15, 18, 21, 23];
+    let hourSteps = [];
+
+    for (let i = 0; i < hours.length; i++) {
+      let start = new Date();
+      let end = new Date();
+
+      if (hours[i] === 23) {
+        start.setHours(hours[i], 0, 0, 0);
+        end.setHours(hours[i], 59, 59, 59);
+      } else {
+        start.setHours(hours[i], 0, 0, 0);
+        end.setHours(hours[i] + 1, 0, 0, 0);
+      }
+
+      await Pedometer.getStepCountAsync(start, end).then(result => {
+        hourSteps.push(result.steps);
+      });
+    }
+
+    this.setState({
+      hourlyStepHistory: hourSteps
     });
   };
 
@@ -45,7 +76,19 @@ class Fitness extends React.Component {
           <Text style={styles.headingText}>7 Day Step Count History</Text>
         </View>
         <View style={styles.chartContainer}>
-          <SevenDayChart dataSet={this.state.sevenDayHistory} />
+          <SevenDayStepChart dataSet={this.state.sevenDayStepHistory} />
+        </View>
+        <View style={styles.headingContainer}>
+          <Text style={styles.headingText}>7 Day Calorie Count History</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <SevenDayCalorieChart dataSet={this.state.sevenDayCalorieHistory} />
+        </View>
+        <View style={styles.headingContainer}>
+          <Text style={styles.headingText}>Last 24 Hours Steps</Text>
+        </View>
+        <View style={styles.chartContainer}>
+          <HourlyStepChart dataSet={this.state.hourlyStepHistory} />
         </View>
       </ScrollView>
     );

@@ -2,7 +2,7 @@ import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 
-const SevenDayChart = props => {
+const SevenDayStepChart = props => {
   return (
     <LineChart
       data={{
@@ -35,4 +35,4 @@ const SevenDayChart = props => {
   );
 };
 
-export default SevenDayChart;
+export default SevenDayStepChart;
