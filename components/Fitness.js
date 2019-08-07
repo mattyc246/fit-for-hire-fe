@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     width: "90%",
-    height: 70,
+    height: 50,
     justifyContent: "space-around",
     borderWidth: 1,
     borderColor: "white",

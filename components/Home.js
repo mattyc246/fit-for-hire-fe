@@ -19,7 +19,9 @@ class Home extends React.Component {
       user: {},
       isPedometerAvailable: "checking",
       todayStepCount: 0,
-      caloriesToday: 0
+      caloriesToday: 0,
+      averageSteps: 0,
+      averageCals: 0
     };
   }
 
@@ -73,6 +75,8 @@ class Home extends React.Component {
         });
       }
     );
+
+    this.calcuateAverage();
   };
 
   calculateMessage = () => {
@@ -94,12 +98,45 @@ class Home extends React.Component {
     return message;
   };
 
+  calcuateAverage = async () => {
+    let avgCals = 0;
+    let avgSteps = 0;
+    let sevenSteps = [];
+    let sevenCals = [];
+
+    for (let i = 6; i >= 0; i--) {
+      const start = new Date();
+      const end = new Date();
+      start.setDate(start.getDate() - i);
+      end.setDate(end.getDate() - i);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 59);
+      await Pedometer.getStepCountAsync(start, end).then(result => {
+        sevenSteps.push(result.steps);
+        sevenCals.push(result.steps / 20);
+      });
+    }
+
+    sumCals = sevenCals.reduce((a, b) => a + b, 0);
+    sumSteps = sevenSteps.reduce((a, b) => a + b, 0);
+
+    avgCals = Math.floor(sumCals / sevenCals.length);
+    avgSteps = Math.floor(sumSteps / sevenSteps.length);
+
+    this.setState({
+      averageSteps: avgSteps,
+      averageCals: avgCals
+    });
+  };
+
   render() {
     const {
       user,
       todayStepCount,
       isPedometerAvailable,
-      caloriesToday
+      caloriesToday,
+      averageCals,
+      averageSteps
     } = this.state;
 
     const analysisMessage = this.calculateMessage();
@@ -119,6 +156,10 @@ class Home extends React.Component {
         <View style={styles.mosaicBoard}>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Fitness</Text>
+            <Text style={styles.textAverage}>Avg. Steps</Text>
+            <Text style={styles.textStepsAvg}>{averageSteps} steps</Text>
+            <Text style={styles.textAverage}>Avg. Calories</Text>
+            <Text style={styles.textStepsAvg}>{averageCals} cals</Text>
           </View>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Chats</Text>
@@ -217,6 +258,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: "bold",
     fontSize: 30
+  },
+  textAverage: {
+    textAlign: "center",
+    marginTop: 10,
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  textStepsAvg: {
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 20
   }
 });
 
