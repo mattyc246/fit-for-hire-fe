@@ -1,7 +1,16 @@
 import React from "react";
-import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+  AsyncStorage
+} from "react-native";
 import SearchModal from "../components/SearchModal";
-import Loader from "../components/Loader";
+import UserCard from "../components/UserCard";
+import Axios from "axios";
 
 class SearchScreen extends React.Component {
   constructor(props) {
@@ -12,11 +21,29 @@ class SearchScreen extends React.Component {
     };
   }
 
-  performSearch = query => {
+  performSearch = async query => {
     this.setState({
       isSearching: true
     });
-    console.log(query);
+
+    let jwt = await AsyncStorage.getItem("userTokenF4H");
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    };
+
+    Axios.get(`http://192.168.1.71:5000/api/v1/users/search?q=${query}`, config)
+      .then(response => {
+        this.setState({
+          searchResults: response.data.users,
+          isSearching: false
+        });
+      })
+      .catch(error => {
+        Alert.alert("Error", error.response.data.message);
+      });
   };
 
   render() {
@@ -30,6 +57,12 @@ class SearchScreen extends React.Component {
               style={styles.searchingLoader}
             />
             <Text style={styles.searchingText}>Searching...</Text>
+          </View>
+        ) : this.state.searchResults.length > 0 ? (
+          <View>
+            {this.state.searchResults.map(user => {
+              return <UserCard key={user.id} user={user} />;
+            })}
           </View>
         ) : (
           <Text style={styles.noResultsText}>No results to show</Text>
