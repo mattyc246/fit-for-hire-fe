@@ -35,7 +35,7 @@ class Home extends React.Component {
     };
 
     axios
-      .get("http://192.168.1.71:5000/api/v1/users/", config)
+      .get("https://fitforhire.herokuapp.com/api/v1/users/", config)
       .then(response => {
         this.setState({
           user: response.data.user

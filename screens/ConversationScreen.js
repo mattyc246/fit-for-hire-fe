@@ -7,50 +7,72 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from "react-native";
 import Axios from "axios";
-import { ScrollView } from "react-native-gesture-handler";
 import Loader from "../components/Loader";
+import socket from "../components/Socket";
 
 class ConversationScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.scroll = null;
     this.state = {
       userId: null,
       currentUser: null,
       newMessage: "",
-      messages: [
-        {
-          body:
-            "Hello it a me mario and i am the greatest person of all time at playing super mario",
-          username: "mattyc246"
-        },
-        {
-          body:
-            "Hello it a me luigi and i am the second greatest person of all time at playing super mario",
-          username: "sansan123"
-        }
-      ]
+      messages: []
     };
   }
 
-  handleNewMessage = () => {
-    let newMessages = [...this.state.messages];
-
-    newMessages.push({
-      body: this.state.newMessage,
-      username: this.state.currentUser.username
+  setUpSocket = () => {
+    socket.on("join", {
+      roomNo: `${this.state.currentUser.id}-${this.state.userId}`
     });
+    socket.on("message_in", data => {
+      let newMessages = [...this.state.messages];
 
-    this.setState({
-      messages: newMessages,
-      newMessage: ""
+      newMessages.push({
+        body: data.message,
+        username: data.username
+      });
+
+      this.setState({
+        messages: newMessages,
+        newMessage: ""
+      });
     });
   };
 
-  fetchChatHistory = () => {
+  handleNewMessage = () => {
+    let data = {
+      roomNo: `${this.state.currentUser.id}-${this.state.userId}`,
+      username: this.state.currentUser.username,
+      message: this.state.newMessage
+    };
+    socket.emit("message_out", data);
+  };
+
+  fetchChatHistory = async () => {
     console.log("fetching...");
+    let JWT = await AsyncStorage.getItem("userTokenF4H");
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${JWT}`
+      }
+    };
+
+    let roomNo = `${this.state.currentUser.id}-${this.state.userId}`;
+    Axios.get(
+      `https://fitforhire.herokuapp.com/api/v1/messages/all?room_no=${roomNo}`,
+      config
+    ).then(response => {
+      this.setState({
+        messages: response.data.messages
+      });
+    });
   };
 
   componentDidMount = async () => {
@@ -63,12 +85,13 @@ class ConversationScreen extends React.Component {
       }
     };
 
-    Axios.get("http://192.168.1.71:5000/api/v1/users/me", config).then(
+    Axios.get("https://fitforhire.herokuapp.com/api/v1/users/me", config).then(
       results => {
         this.setState({
           currentUser: results.data.user,
           userId: professional
         });
+        this.setUpSocket();
         this.fetchChatHistory();
       }
     );
@@ -89,7 +112,13 @@ class ConversationScreen extends React.Component {
         keyboardVerticalOffset={60}
         enabled
       >
-        <ScrollView style={styles.chatContainer}>
+        <ScrollView
+          style={styles.chatContainer}
+          ref={scroll => (this.scroll = scroll)}
+          onContentSizeChange={() =>
+            this.scroll.scrollToEnd({ animated: true })
+          }
+        >
           {this.state.messages.length > 0 ? (
             this.state.messages.map((message, index) => {
               return (
@@ -107,7 +136,11 @@ class ConversationScreen extends React.Component {
               );
             })
           ) : (
-            <Text>Start your conversation now!</Text>
+            <View style={styles.noChatsBox}>
+              <Text style={styles.noChatsText}>
+                Start your conversation now!
+              </Text>
+            </View>
           )}
         </ScrollView>
         <View style={styles.inputContainer}>
@@ -164,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#cbe5f8"
   },
   chatContainer: {
-    height: Dimensions.get("window").height - 50
+    height: Dimensions.get("window").height - 165
   },
   inputBox: {
     width: Dimensions.get("window").width - 100,
@@ -200,5 +233,22 @@ const styles = StyleSheet.create({
     height: 50,
     position: "absolute",
     bottom: 0
+  },
+  noChatsBox: {
+    width: Dimensions.get("window").width / 2,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    borderColor: "black",
+    borderWidth: 0.5,
+    shadowColor: "black",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    alignSelf: "center",
+    marginTop: 200
+  },
+  noChatsText: {
+    fontSize: 25,
+    textAlign: "center"
   }
 });

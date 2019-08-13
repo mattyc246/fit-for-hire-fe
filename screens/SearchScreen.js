@@ -34,7 +34,10 @@ class SearchScreen extends React.Component {
       }
     };
 
-    Axios.get(`http://192.168.1.71:5000/api/v1/users/search?q=${query}`, config)
+    Axios.get(
+      `https://fitforhire.herokuapp.com/api/v1/users/search?q=${query}`,
+      config
+    )
       .then(response => {
         this.setState({
           searchResults: response.data.users,
@@ -59,7 +62,7 @@ class SearchScreen extends React.Component {
       p_id: userId
     };
 
-    Axios.post("http://192.168.1.71:5000/api/v1/chats/", data, config)
+    Axios.post("https://fitforhire.herokuapp.com/api/v1/chats/", data, config)
       .then(response => {
         if (response.data.ok) {
           this.props.navigation.navigate("Chat", {

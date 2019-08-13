@@ -56,7 +56,7 @@ class SignUpScreen extends React.Component {
         formData.append("date_of_birth", dateOfBirth.toUTCString());
 
         axios
-          .post("http://192.168.1.71:5000/api/v1/users/", formData, {
+          .post("https://fitforhire.herokuapp.com/api/v1/users/", formData, {
             headers: { "content-type": "multipart/form-data" }
           })
           .then(response => {

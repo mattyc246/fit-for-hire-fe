@@ -10,10 +10,7 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
-import socketIO from "socket.io-client";
 import Axios from "axios";
-import { withNavigation } from "react-navigation";
-import hoistNonReactStatics from "hoist-non-react-statics";
 
 class ChatsScreen extends React.Component {
   constructor(props) {
@@ -34,7 +31,10 @@ class ChatsScreen extends React.Component {
         }
       };
 
-      Axios.get("http://192.168.1.71:5000/api/v1/chats/active_chats", config)
+      Axios.get(
+        "https://fitforhire.herokuapp.com/api/v1/chats/active_chats",
+        config
+      )
         .then(response => {
           this.setState({ chats: response.data.chats });
         })

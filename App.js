@@ -1,7 +1,7 @@
 import React from "react";
 import { Platform, StatusBar, StyleSheet, View } from "react-native";
-import socketIO from "socket.io-client";
 import AppNavigator from "./navigation/AppNavigator";
+import socket from "./components/Socket";
 
 class App extends React.Component {
   constructor(props) {
@@ -9,10 +9,6 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {
-    const socket = socketIO("http://192.168.1.71:5001", {
-      transports: ["websocket"],
-      jsonp: false
-    });
     socket.connect();
     socket.on("connect", () => {
       console.log("Chat Server Connected!");
