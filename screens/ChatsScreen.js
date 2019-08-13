@@ -36,7 +36,6 @@ class ChatsScreen extends React.Component {
 
       Axios.get("http://192.168.1.71:5000/api/v1/chats/active_chats", config)
         .then(response => {
-          console.log(response.data);
           this.setState({ chats: response.data.chats });
         })
         .catch(error => {
