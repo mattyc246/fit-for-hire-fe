@@ -34,7 +34,10 @@ class SearchScreen extends React.Component {
       }
     };
 
-    Axios.get(`http://192.168.1.71:5000/api/v1/users/search?q=${query}`, config)
+    Axios.get(
+      `https://fitforhire.herokuapp.com/api/v1/users/search?q=${query}`,
+      config
+    )
       .then(response => {
         this.setState({
           searchResults: response.data.users,
@@ -43,6 +46,35 @@ class SearchScreen extends React.Component {
       })
       .catch(error => {
         Alert.alert("Error", error.response.data.message);
+      });
+  };
+
+  handleChat = async userId => {
+    let jwt = await AsyncStorage.getItem("userTokenF4H");
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    };
+
+    let data = {
+      p_id: userId
+    };
+
+    Axios.post("https://fitforhire.herokuapp.com/api/v1/chats/", data, config)
+      .then(response => {
+        if (response.data.ok) {
+          this.props.navigation.navigate("Chat", {
+            userId: userId
+          });
+        }
+      })
+      .catch(error => {
+        Alert.alert(
+          "Error",
+          "Something went wrong, we are fixing it as we speak."
+        );
       });
   };
 
@@ -61,7 +93,13 @@ class SearchScreen extends React.Component {
         ) : this.state.searchResults.length > 0 ? (
           <View>
             {this.state.searchResults.map(user => {
-              return <UserCard key={user.id} user={user} />;
+              return (
+                <UserCard
+                  key={user.id}
+                  handleChat={this.handleChat}
+                  user={user}
+                />
+              );
             })}
           </View>
         ) : (

@@ -31,7 +31,7 @@ class SignInScreen extends React.Component {
       formData.append("password", password);
 
       axios
-        .post("http://192.168.1.71:5000/api/v1/sessions/", formData, {
+        .post("https://fitforhire.herokuapp.com/api/v1/sessions/", formData, {
           headers: { "content-type": "multipart/form-data" }
         })
         .then(response => {

@@ -2,6 +2,7 @@ import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import Loader from "../components/Loader";
 import Home from "../components/Home";
+import { connectSocket } from "../components/Socket";
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount = () => {
+    connectSocket();
     setTimeout(() => {
       this.setState({ isLoading: false });
     }, 2500);
