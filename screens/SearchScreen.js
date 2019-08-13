@@ -46,6 +46,35 @@ class SearchScreen extends React.Component {
       });
   };
 
+  handleChat = async userId => {
+    let jwt = await AsyncStorage.getItem("userTokenF4H");
+
+    let config = {
+      headers: {
+        Authorization: `Bearer ${jwt}`
+      }
+    };
+
+    let data = {
+      p_id: userId
+    };
+
+    Axios.post("http://192.168.1.71:5000/api/v1/chats/", data, config)
+      .then(response => {
+        if (response.data.ok) {
+          this.props.navigation.navigate("Chat", {
+            userId: userId
+          });
+        }
+      })
+      .catch(error => {
+        Alert.alert(
+          "Error",
+          "Something went wrong, we are fixing it as we speak."
+        );
+      });
+  };
+
   render() {
     return (
       <ScrollView style={styles.container}>
@@ -61,7 +90,13 @@ class SearchScreen extends React.Component {
         ) : this.state.searchResults.length > 0 ? (
           <View>
             {this.state.searchResults.map(user => {
-              return <UserCard key={user.id} user={user} />;
+              return (
+                <UserCard
+                  key={user.id}
+                  handleChat={this.handleChat}
+                  user={user}
+                />
+              );
             })}
           </View>
         ) : (

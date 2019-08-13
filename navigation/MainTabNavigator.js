@@ -11,6 +11,7 @@ import ChatsScreen from "../screens/ChatsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import SearchScreen from "../screens/SearchScreen";
 import FitnessScreen from "../screens/FitnessScreen";
+import ConversationScreen from "../screens/ConversationScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -38,7 +39,8 @@ HomeStack.path = "";
 
 const ChatsStack = createStackNavigator(
   {
-    Chats: ChatsScreen
+    AllChats: ChatsScreen,
+    Chat: ConversationScreen
   },
   config
 );

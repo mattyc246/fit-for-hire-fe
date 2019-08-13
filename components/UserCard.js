@@ -14,7 +14,10 @@ const UserCard = props => {
         <Text style={styles.cardText}>|</Text>
         <Text style={styles.cardText}>{props.user.profession}</Text>
         <Text style={styles.cardText}>|</Text>
-        <TouchableOpacity style={styles.chatNow} onPress={() => alert("chat")}>
+        <TouchableOpacity
+          style={styles.chatNow}
+          onPress={() => props.handleChat(props.user.id)}
+        >
           <Text style={styles.chatNowText}>Chat Now</Text>
         </TouchableOpacity>
       </View>
