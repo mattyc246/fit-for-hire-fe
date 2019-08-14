@@ -65,6 +65,14 @@ class SearchModal extends React.Component {
               >
                 <Text style={styles.searchText}>Search</Text>
               </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => {
+                  this.setModalVisible(!this.state.modalVisible);
+                }}
+                style={styles.closeButton}
+              >
+                <Text style={styles.searchText}>Close</Text>
+              </TouchableHighlight>
             </View>
           </View>
         </Modal>
@@ -93,7 +101,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderRadius: 10,
     alignSelf: "center",
-    marginTop: 20,
+    marginTop: 200,
     backgroundColor: "white",
     shadowColor: "black",
     shadowOpacity: 0.2,
@@ -124,19 +132,31 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     flex: 1,
-    backgroundColor: "#c080ed"
+    backgroundColor: "#cbe5f8"
   },
   searchButton: {
     justifyContent: "center",
     width: "60%",
     height: 50,
-    backgroundColor: "#cbe5f8",
+    backgroundColor: "#c080ed",
     alignSelf: "center",
     shadowColor: "black",
     shadowOpacity: 0.3,
     shadowRadius: 10,
     marginTop: 15,
     borderRadius: 15
+  },
+  closeButton: {
+    justifyContent: "center",
+    width: "30%",
+    height: 25,
+    backgroundColor: "red",
+    alignSelf: "center",
+    shadowColor: "black",
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    marginTop: 15,
+    borderRadius: 5
   },
   searchText: {
     color: "black",

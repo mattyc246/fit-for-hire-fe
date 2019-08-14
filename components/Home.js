@@ -18,6 +18,7 @@ class Home extends React.Component {
     this.state = {
       user: {},
       isPedometerAvailable: "checking",
+      chats: [],
       todayStepCount: 0,
       caloriesToday: 0,
       averageSteps: 0,
@@ -43,6 +44,20 @@ class Home extends React.Component {
       })
       .catch(error => {
         Alert.alert("Error", error.response.data.message);
+      });
+
+    axios
+      .get("https://fitforhire.herokuapp.com/api/v1/chats/last_four", config)
+      .then(response => {
+        this.setState({
+          chats: response.data.chats
+        });
+      })
+      .catch(error => {
+        Alert.alert(
+          "Error",
+          "Something didn't go right fetching your chats :("
+        );
       });
 
     Pedometer.isAvailableAsync().then(
@@ -141,6 +156,13 @@ class Home extends React.Component {
 
     const analysisMessage = this.calculateMessage();
 
+    let today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    const yyyy = today.getFullYear();
+
+    today = mm + "/" + dd + "/" + yyyy;
+
     return (
       <ScrollView>
         <View style={styles.welcomeContainer}>
@@ -163,20 +185,29 @@ class Home extends React.Component {
           </View>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Chats</Text>
+            {this.state.chats.map((chat, index) => {
+              return (
+                <View style={styles.chatBox} key={index}>
+                  <Text style={styles.chatText}>
+                    {chat.professional.username}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Calories</Text>
-            <Text style={styles.textToday}>Today</Text>
             <Text style={styles.textSteps}>{caloriesToday}</Text>
             <Text style={styles.textSteps}>calories</Text>
+            <Text style={styles.textToday}>{today}</Text>
           </View>
           <View style={styles.mosaicBox}>
             <Text style={styles.mosaicTitle}>Steps</Text>
             {isPedometerAvailable ? (
               <>
-                <Text style={styles.textToday}>Today</Text>
                 <Text style={styles.textSteps}>{todayStepCount}</Text>
                 <Text style={styles.textSteps}>steps</Text>
+                <Text style={styles.textToday}>{today}</Text>
               </>
             ) : (
               <Text>Error! Unavailable</Text>
@@ -184,9 +215,9 @@ class Home extends React.Component {
           </View>
         </View>
         <View style={styles.welcomeContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.welcomeText}>Analysis:</Text>
-            <Text>{analysisMessage}</Text>
+          <View style={styles.textAnalysisContainer}>
+            <Text style={styles.textAnalysisTitle}>Analysis:</Text>
+            <Text style={styles.textAnalysis}>{analysisMessage}</Text>
           </View>
         </View>
       </ScrollView>
@@ -210,6 +241,20 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOpacity: 0.2,
     shadowRadius: 15
+  },
+  textAnalysisContainer: {
+    flex: 1,
+    flexDirection: "row",
+    padding: 10
+  },
+  textAnalysis: {
+    width: "60%",
+    alignSelf: "center"
+  },
+  textAnalysisTitle: {
+    width: "40%",
+    fontSize: 30,
+    alignSelf: "center"
   },
   welcomeText: {
     fontSize: 20,
@@ -237,6 +282,8 @@ const styles = StyleSheet.create({
     width: 180,
     padding: 5,
     backgroundColor: "white",
+    borderColor: "black",
+    borderWidth: 0.5,
     borderRadius: 5,
     marginTop: 15,
     shadowColor: "black",
@@ -257,7 +304,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     fontWeight: "bold",
-    fontSize: 30
+    fontSize: 20
   },
   textAverage: {
     textAlign: "center",
@@ -269,6 +316,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     fontSize: 20
+  },
+  chatBox: {
+    width: 160,
+    alignSelf: "center",
+    height: 30,
+    shadowColor: "black",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderColor: "black",
+    borderWidth: 0.5,
+    borderRadius: 5,
+    backgroundColor: "whitesmoke",
+    margin: 5,
+    justifyContent: "center"
+  },
+  chatText: {
+    fontSize: 10,
+    fontWeight: "bold",
+    textAlign: "center"
   }
 });
 

@@ -6,7 +6,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert
+  Alert,
+  Dimensions
 } from "react-native";
 import DateModal from "../components/DateModal";
 import axios from "axios";
@@ -108,7 +109,7 @@ class SignUpScreen extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <Image
-          source={require("../assets/images/f4h.png")}
+          source={require("../assets/images/logo_transparent.png")}
           style={styles.mainLogo}
         />
         <Text style={styles.headingText}>Sign Up</Text>
@@ -200,7 +201,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#cbe5f8"
   },
   mainLogo: {
-    width: "80%",
+    width: Dimensions.get("window").width * 0.5,
+    height: Dimensions.get("window").width * 0.5,
     alignSelf: "center"
   },
   headingText: {

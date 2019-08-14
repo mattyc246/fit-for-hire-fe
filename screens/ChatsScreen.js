@@ -57,7 +57,8 @@ class ChatsScreen extends React.Component {
               <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate("Chat", {
-                    userId: chat.professional.id
+                    userId: chat.professional.id,
+                    username: chat.professional.username
                   })
                 }
                 key={chat.room_no}
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     paddingRight: 25
   },
   chatText: {
-    fontSize: 30,
+    fontSize: 20,
     alignSelf: "center"
   },
   noChatsText: {
