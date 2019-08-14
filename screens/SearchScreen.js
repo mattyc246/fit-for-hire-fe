@@ -66,7 +66,8 @@ class SearchScreen extends React.Component {
       .then(response => {
         if (response.data.ok) {
           this.props.navigation.navigate("Chat", {
-            userId: userId
+            userId: userId,
+            username: response.data.professional.username
           });
         }
       })

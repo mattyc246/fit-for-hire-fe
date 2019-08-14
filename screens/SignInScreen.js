@@ -7,9 +7,9 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  Dimensions
 } from "react-native";
-
 import axios from "axios";
 
 class SignInScreen extends React.Component {
@@ -66,7 +66,7 @@ class SignInScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Image
-          source={require("../assets/images/f4h.png")}
+          source={require("../assets/images/logo_transparent.png")}
           style={styles.mainLogo}
         />
         <Text style={styles.headingText}>Login</Text>
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#cbe5f8"
   },
   mainLogo: {
-    width: "80%",
+    width: Dimensions.get("window").width * 0.5,
+    height: Dimensions.get("window").width * 0.5,
     alignSelf: "center"
   },
   headingText: {

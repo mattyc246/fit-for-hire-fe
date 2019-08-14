@@ -26,6 +26,12 @@ class ConversationScreen extends React.Component {
     };
   }
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam("username")
+    };
+  };
+
   setUpSocket = () => {
     socket.on("join", {
       roomNo: `${this.state.currentUser.id}-${this.state.userId}`
@@ -130,8 +136,8 @@ class ConversationScreen extends React.Component {
                       : styles.chatBoxOther
                   }
                 >
-                  <Text>{message.body}</Text>
-                  <Text>{message.username}</Text>
+                  <Text style={styles.messageBody}>{message.body}</Text>
+                  <Text style={styles.messageUsername}>{message.username}</Text>
                 </View>
               );
             })
@@ -250,5 +256,13 @@ const styles = StyleSheet.create({
   noChatsText: {
     fontSize: 25,
     textAlign: "center"
+  },
+  messageBody: {
+    fontSize: 15
+  },
+  messageUsername: {
+    fontSize: 15,
+    opacity: 0.5,
+    marginTop: 5
   }
 });
